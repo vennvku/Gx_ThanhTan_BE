@@ -14,11 +14,14 @@ class Article extends Model
 
     protected $fillable = [
         'photo', 
-        'is_show', 
-        'is_featured', 
         'created_by',
         'updated_by',
         'deleted_by',
+    ];
+
+    protected $casts = [
+        'is_show' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     public function createdBy(): BelongsTo
