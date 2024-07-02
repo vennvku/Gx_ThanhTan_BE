@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('article_translations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('article_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('language_id');
+            $table->foreignId('language_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->text('content');
+            $table->text('description');
             $table->softDeletes();
             $table->timestamps();
         });
