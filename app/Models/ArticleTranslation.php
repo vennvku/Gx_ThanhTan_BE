@@ -14,11 +14,6 @@ class ArticleTranslation extends Model
 
     protected $fillable = ['article_id', 'language_id', 'title', 'content', 'description'];
 
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
-
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
