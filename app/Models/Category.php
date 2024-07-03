@@ -29,4 +29,9 @@ class Category extends Model
     {
         return $this->hasMany(CategoryTranslation::class);
     }
+
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'article_categories');
+    }
 }

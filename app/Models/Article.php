@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use EloquentFilter\Filterable;
+use App\ModelFilters\Admin\ArticleFilter;
 
 class Article extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Filterable;
 
     protected $fillable = [
         'photo', 
+        'is_show',
+        'is_featured',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -38,5 +43,15 @@ class Article extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ArticleTranslation::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'article_categories');
+    }
+
+    public function modelFilter(): string
+    {
+        return $this->provideFilter(ArticleFilter::class);
     }
 }
