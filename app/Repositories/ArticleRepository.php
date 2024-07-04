@@ -12,6 +12,26 @@ class ArticleRepository
     {
     }
 
+    public function getFeaturedLatestNews($totalArticle): LengthAwarePaginator
+    {
+        $featuredArticles = $this->article->query()
+            ->where('is_featured', true)
+            ->orderByDesc('updated_at');
+
+        $featuredArticlesCount = $featuredArticles->count();
+
+        if ($featuredArticlesCount < $totalArticle) {
+            $additionalArticles = $this->article->query()
+                                     ->where('is_featured', false)
+                                     ->orderByDesc('updated_at')
+                                     ->limit($totalArticle - $featuredArticlesCount);
+
+            $result = $featuredArticles->union($additionalArticles);
+        }
+
+        return $result->paginate(perPage: $totalArticle);
+    }
+
     public function getArticles(int $perPage, int $page, array $filters): LengthAwarePaginator
     {
         return $this->article->query()
