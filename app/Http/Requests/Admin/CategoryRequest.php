@@ -14,6 +14,7 @@ class CategoryRequest extends ApiRequest
     public function rules(): array
     {
         return [
+            'url' => ['nullable'],
             'parent_id' => ['nullable', 'exists:categories,id'],
         ];
     }

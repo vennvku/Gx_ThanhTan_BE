@@ -50,6 +50,11 @@ class ArticleRepository
         return $this->article->where('id', $id)->first();
     }
 
+    public function getArticleBySlug(string $slug): Article|null
+    {
+        return $this->article->where('slug', $slug)->first();
+    }
+
     public function updateArticle(int $id, array $values): bool|int
     {
         return $this->article->where('id', $id)->first()->update($values);

@@ -35,10 +35,13 @@ class ArticleResource extends JsonResource
             'photo' => $this->resource->photo
                         ? Helpers::generateImagePath($this->resource->photo)
                         : Helpers::generateImagePath(Constants::DEFAULT_IMAGE_PATH),
+            'slug' => $this->resource->slug,
             'is_show' => $this->resource->is_show,
             'is_featured' => $this->resource->is_featured,
-            'created_at' => $this->resource->created_at,
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'created_at' => Helpers::formatPostTime($this->resource->created_at),
+            'categories' => $this->whenLoaded('categories', function () {
+                return new CategoryResource($this->categories->first());
+            }), 
             'translations' => $translationContent,
         ];
     }

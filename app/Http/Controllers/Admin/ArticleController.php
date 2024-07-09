@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Utils\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\ArticleRepository;
@@ -39,7 +40,23 @@ class ArticleController extends Controller
     public function store(ArticleRequest $request): JsonResponse
     {
 
-        $article = $this->articleRepository->store($request->validated());
+        $slug = Helpers::slugify($request->input('title'));
+
+        $articleBySlug = $this->articleRepository->getArticleBySlug($slug);
+
+        if ($articleBySlug) {
+            return $this->respondError(
+                config('errors.article_already_exists'),
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $article = $this->articleRepository->store([
+            'slug' => Helpers::slugify($slug),
+            'photo' => $request->input('photo'),
+            'is_show' => $request->input('is_show'),
+            'is_featured' => $request->input('is_featured'),
+        ]);
 
         $articleCategory = $this->articleCategoryRepository->store([
             'article_id' => $article->id,
@@ -68,6 +85,6 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = $this->articleRepository->getArticleById($id);
-        return $this->respondSuccess(new ArticleResource($article), Response::HTTP_CREATED);
+        return $this->respondSuccess(new ArticleResource($article));
     }
 }

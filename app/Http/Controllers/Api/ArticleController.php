@@ -21,10 +21,18 @@ class ArticleController extends Controller
 
     public function getFeaturedLatestNews(Request $request): JsonResponse
     {
-        $totalArticle = 10;
+        $totalArticle = 15;
 
         $article = $this->articleRepository->getFeaturedLatestNews($totalArticle);  
  
         return $this->respondSuccess(new ArticleCollection($article));
+    }
+
+    public function showDetailArticle($slug): JsonResponse
+    {  
+
+        $articleBySlug = $this->articleRepository->getArticleBySlug($slug);
+ 
+        return $this->respondSuccess(new ArticleResource($articleBySlug));
     }
 }

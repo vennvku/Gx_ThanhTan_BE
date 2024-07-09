@@ -23,6 +23,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'name'=> $names,
+            'url'=> $this->url,
             'parent_id' => $this->parent_id,
             'is_parent' => $this->parent_id === null, 
             'has_children' => $this->children->isNotEmpty(),

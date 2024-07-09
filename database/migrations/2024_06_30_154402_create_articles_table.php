@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
+            $table->string('slug');
             $table->string('photo');
             $table->boolean('is_show')->default(true);
             $table->boolean('is_featured')->default(false);

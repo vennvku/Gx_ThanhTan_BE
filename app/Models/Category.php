@@ -13,7 +13,7 @@ class Category extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['parent_id'];
+    protected $fillable = ['url', 'parent_id'];
 
     public function parent(): BelongsTo
     {

@@ -22,11 +22,8 @@ class CategoryResource extends JsonResource
 
         return [
             'id' => $this->resource->id,
-            'name'=> $names,
-            'parent_id' => $this->parent_id,
-            'is_parent' => $this->parent_id === null, 
-            'has_children' => $this->children->isNotEmpty(),
-            'children' => CategoryResource::collection($this->whenLoaded('children')),
+            'url' => $this->resource->url,
+            'name'=> $names
         ];
     }
 }

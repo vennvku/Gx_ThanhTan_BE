@@ -31,6 +31,7 @@ class ArticleResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'photo' => $this->photo,
+            'slug' => $this->slug,
             'is_show' => $this->is_show,
             'is_featured' => $this->is_featured,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
