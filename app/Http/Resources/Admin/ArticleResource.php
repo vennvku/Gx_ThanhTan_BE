@@ -34,7 +34,10 @@ class ArticleResource extends JsonResource
             'slug' => $this->slug,
             'is_show' => $this->is_show,
             'is_featured' => $this->is_featured,
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'created_at' => $this->created_at,
+            'categories' => $this->whenLoaded('categories', function () {
+                return new CategoryResource($this->categories->first());
+            }), 
             'translations' => $translationContent,
         ];
     }
