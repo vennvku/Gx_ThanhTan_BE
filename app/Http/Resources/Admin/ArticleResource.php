@@ -35,10 +35,10 @@ class ArticleResource extends JsonResource
             'is_show' => $this->is_show,
             'is_featured' => $this->is_featured,
             'created_at' => $this->created_at,
+            'translations' => $translationContent,
             'categories' => $this->whenLoaded('categories', function () {
                 return new CategoryResource($this->categories->first());
             }), 
-            'translations' => $translationContent,
         ];
     }
 }

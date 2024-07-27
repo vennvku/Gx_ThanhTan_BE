@@ -20,14 +20,20 @@ class CategoryResource extends JsonResource
             return [$translation->language->code => $translation->name];
         });
 
+        $children = $this->resource->children->sortBy('position');
+
         return [
             'id' => $this->resource->id,
             'name'=> $names,
-            'url'=> $this->url,
-            'parent_id' => $this->parent_id,
-            'is_parent' => $this->parent_id === null, 
-            'has_children' => $this->children->isNotEmpty(),
-            'children' => CategoryResource::collection($this->whenLoaded('children')),
+            'url'=> $this->resource->url,
+            'parent_id' => $this->resource->parent_id,
+            'is_parent' => $this->resource->parent_id === null, 
+            'has_children' => $this->resource->children->isNotEmpty(),
+            'is_fixed_page' => $this->resource->is_fixed_page,
+            'status' => $this->resource->status,
+            'position' => $this->resource->position,
+            'created_at' => $this->resource->created_at,
+            'children' => CategoryResource::collection($children),
         ];
     }
 }

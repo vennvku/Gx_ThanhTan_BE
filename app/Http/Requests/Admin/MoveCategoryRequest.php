@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\ApiRequest;
 
-class CategoryRequest extends ApiRequest
+class MoveCategoryRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,10 +14,7 @@ class CategoryRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'url' => ['nullable'],
-            'parent_id' => ['nullable', 'exists:categories,id'],
-            'is_fixed_page' => ['nullable', 'boolean'],
-            'status' => ['nullable', 'boolean'],            
+            'id' => ['required', 'integer', 'exists:categories,id'],
         ];
     }
 

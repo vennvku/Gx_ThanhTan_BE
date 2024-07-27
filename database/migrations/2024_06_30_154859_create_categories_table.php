@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('url')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->boolean('is_fixed_page')->default(false);
+            $table->boolean('status')->default(true);
+            $table->integer('position')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
