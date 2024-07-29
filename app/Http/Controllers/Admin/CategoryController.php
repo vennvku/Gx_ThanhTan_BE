@@ -5,17 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Admin\CategoryRepository;
+use App\Repositories\Admin\CategoryTranslationRepository;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
 use App\Http\Resources\Admin\CategoryCollection;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Admin\MoveCategoryRequest;
+use App\Http\Requests\Admin\ManagementCategoryRequest;
+
+
 
 class CategoryController extends Controller
 {
     public function __construct(
-        private readonly CategoryRepository $categoryRepository
+        private readonly CategoryRepository $categoryRepository,
+        private readonly CategoryTranslationRepository $categoryTranslationRepository,
     ) {
     }
 
@@ -29,8 +34,38 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request): JsonResponse
     {
+        $existingCategory = $this->categoryRepository->getCategoryByUrl($request->input('url'));
+        
+        if ($existingCategory) {  
+            return $this->respondError(
+                config('errors.this_url_is_already_in_use_by_another_category'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
 
-        $category = $this->categoryRepository->store($request->validated());
+        $latestPosition = $this->categoryRepository->getLatestPosition($request->input('parent_id'));
+
+        if ($latestPosition) {
+            $positionLatest = $latestPosition->position; 
+        } else {
+            $positionLatest = 0;
+        }
+
+        $validatedData = $request->validated();
+        $validatedData['position'] = $positionLatest + 1;
+
+        $category = $this->categoryRepository->store($validatedData);
+
+        $transitionViData['category_id'] = $category->id;
+        $transitionViData['language_id'] = 1;
+        $transitionViData['name'] = $request->nameVi;
+
+        $transitionEnData['category_id'] = $category->id;
+        $transitionEnData['language_id'] = 2;
+        $transitionEnData['name'] = $request->nameEn;
+
+        $categogyTransitionVi = $this->categoryTranslationRepository->store($transitionViData);
+        $categogyTransitionEn = $this->categoryTranslationRepository->store($transitionEnData);
 
         return $this->respondSuccess(new CategoryResource($category), Response::HTTP_CREATED);
     }
@@ -107,6 +142,8 @@ class CategoryController extends Controller
 
         return $this->respondSuccess(null);
     }
+
+    
 
 
     

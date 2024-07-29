@@ -37,6 +37,19 @@ class CategoryRepository
                     ->first();
     }
 
+    public function getCategoryByUrl(string $url): Category|null
+    {
+        return $this->category->query()->where('url', $url)->first();
+    }
+
+    public function getLatestPosition(int $parent_id = null): Category|null
+    {
+        return $this->category->query()
+                ->where('parent_id', $parent_id)
+                ->orderByDesc('position')
+                ->first();
+    }
+
     public function updateCategory(int $id, array $values): bool|int
     {
         return $this->category->where('id', $id)->first()->update($values);
