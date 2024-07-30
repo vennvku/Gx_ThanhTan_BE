@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('category_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('language_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('language_id')->constrained('languages')->cascadeOnDelete();
             $table->string('name');
             $table->softDeletes();
             $table->timestamps();

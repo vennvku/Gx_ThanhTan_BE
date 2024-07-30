@@ -50,6 +50,31 @@ class CategoryRepository
                 ->first();
     }
 
+    public function updateCategoryPositions(int $parentId = null): bool|int 
+    {   
+
+        $categories = $this->category
+                        ->where('parent_id', $parentId)
+                        ->orderBy('position')
+                        ->get();
+
+        if ($categories->isEmpty()) {
+            return 0; 
+        }
+
+        $updatedCount = 0; 
+
+        foreach ($categories as $index => $category) {
+            $category->position = $index + 1; 
+            if ($category->save()) {
+                $updatedCount++;
+            }
+        }
+
+        return $updatedCount;
+    }
+
+
     public function updateCategory(int $id, array $values): bool|int
     {
         return $this->category->where('id', $id)->first()->update($values);

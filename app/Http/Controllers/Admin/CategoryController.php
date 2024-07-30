@@ -34,8 +34,9 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request): JsonResponse
     {
+
         $existingCategory = $this->categoryRepository->getCategoryByUrl($request->input('url'));
-        
+
         if ($existingCategory) {  
             return $this->respondError(
                 config('errors.this_url_is_already_in_use_by_another_category'),
@@ -73,7 +74,7 @@ class CategoryController extends Controller
     public function update(int $id, CategoryRequest $request): JsonResponse
     {
         $category = $this->categoryRepository->getCategoryById($id);
-
+        
         if (is_null($category)) {
             return $this->respondError(
                 config('errors.the_id_not_found'),
@@ -139,6 +140,26 @@ class CategoryController extends Controller
 
         $this->categoryRepository->updateCategory($category->id, ['position' => $category->position + 1]);
         $this->categoryRepository->updateCategory($nextCategory->id, ['position' => $nextCategory->position - 1]);
+
+        return $this->respondSuccess(null);
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        $category = $this->categoryRepository->getCategoryById($id);
+
+        if (is_null($category)) {
+            return $this->respondError(
+                config('errors.the_id_not_found'),
+                Response::HTTP_NOT_FOUND,
+            );
+        }
+
+        $parentId = $category->parent_id;
+
+        $this->categoryRepository->deleteCategoryById($id);
+
+        $updatedCount = $this->categoryRepository->updateCategoryPositions($parentId);
 
         return $this->respondSuccess(null);
     }

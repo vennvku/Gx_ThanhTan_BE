@@ -34,4 +34,14 @@ class Category extends Model
     {
         return $this->belongsToMany(Article::class, 'article_categories');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($category) {
+            $category->translations()->delete();
+        });
+    }
+
 }
