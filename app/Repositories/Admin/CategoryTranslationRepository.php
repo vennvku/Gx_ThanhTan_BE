@@ -16,9 +16,13 @@ class CategoryTranslationRepository
         return $this->categoryTranslation->query()->create($attributes);
     }
 
-    public function updateCategoryTranslation(int $id, array $values): bool|int
+    public function updateCategoryTranslation(int $categoryId, int $languageId, string $name): bool|int
     {
-        return $this->categoryTranslation->where('id', $id)->first()->update($values);
+        return $this->categoryTranslation
+                -> where('category_id', $categoryId)
+                ->where('language_id', $languageId)
+                ->first()
+                ->update(['name' => $name]);
     }
 
     public function deleteCategoryTranslationById(int $id): bool|null

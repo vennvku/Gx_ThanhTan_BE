@@ -82,7 +82,35 @@ class CategoryController extends Controller
             );
         }
 
-        $this->categoryRepository->updateCategory($id, $request->validated());
+        $validatedData = $request->validated();
+
+        if($request->has('parent_id')) {
+            $latestPosition = $this->categoryRepository->getLatestPosition($request->input('parent_id'));
+
+            if ($latestPosition) {
+                $positionLatest = $latestPosition->position; 
+            } else {
+                $positionLatest = 0;
+            }
+
+            $validatedData['position'] = $positionLatest + 1;
+        }
+
+        $this->categoryRepository->updateCategory($id, $validatedData);
+
+        if($request->has('parent_id')) {
+            $updatedCount = $this->categoryRepository->updateCategoryPositions($category->parent_id);
+        }
+
+        if($request->input('nameVi') && $request->input('nameEn')) {
+
+            $languageIdVi = 1;
+            $languageIdEn = 2;
+
+            $categogyTransitionVi = $this->categoryTranslationRepository->updateCategoryTranslation($id, $languageIdVi, $request->input('nameVi'));
+            $categogyTransitionEn = $this->categoryTranslationRepository->updateCategoryTranslation($id, $languageIdEn, $request->input('nameEn'));
+        }
+
         $category = $this->categoryRepository->getCategoryById($id);
 
         return $this->respondSuccess(new CategoryResource($category));
@@ -142,6 +170,20 @@ class CategoryController extends Controller
         $this->categoryRepository->updateCategory($nextCategory->id, ['position' => $nextCategory->position - 1]);
 
         return $this->respondSuccess(null);
+    }
+
+    public function show($id): JsonResponse
+    {
+        $category = $this->categoryRepository->getCategoryById($id);
+
+        if (is_null($category)) {
+            return $this->respondError(
+                config('errors.the_id_not_found'),
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        return $this->respondSuccess(new CategoryResource($category));
     }
 
     public function destroy($id): JsonResponse
