@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('article_id')->constrained()->cascadeOnDelete();
             $table->foreignId('language_id')->constrained()->cascadeOnDelete();
-            $table->string('title');
-            $table->text('content');
-            $table->text('description');
+            $table->string('title')->nullable();
+            $table->text('content')->nullable();
+            $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

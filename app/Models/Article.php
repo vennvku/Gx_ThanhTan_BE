@@ -19,6 +19,8 @@ class Article extends Model
     protected $fillable = [
         'slug',
         'photo', 
+        'is_show',
+        'is_featured',
         'created_by',
         'updated_by',
         'deleted_by',

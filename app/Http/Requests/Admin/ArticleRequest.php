@@ -14,13 +14,17 @@ class ArticleRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'photo' => ['required'],
             'is_show' => ['boolean'],
             'is_featured' => ['boolean'],
             'category_id' => ['exists:categories,id'],
-            'title' => ['required'],
-            'content' => ['required'],
-            'description' => ['required'],
+            'photo' => ['nullable'],
+            'titleVi' => ['nullable'],
+            'titleEn' => ['nullable'],
+            'descriptionVi' => ['nullable'],
+            'descriptionEn' => ['nullable'],
+            'slug' => ['nullable'],
+            'contentVi' => ['nullable'],
+            'contentEn' => ['nullable'],
         ];
     }
 

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Utils\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Repositories\ArticleRepository;
+use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Admin\ArticleRequest;
 use App\Http\Resources\Admin\ArticleResource;
 use App\Http\Resources\Admin\ArticleCollection;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repositories\ArticleTranslationRepository;
-use App\Repositories\ArticleCategoryRepository;
+use App\Repositories\Admin\ArticleTranslationRepository;
+use App\Repositories\Admin\ArticleCategoryRepository;
 
 use Illuminate\Support\Facades\Http;
 
@@ -40,9 +40,20 @@ class ArticleController extends Controller
     public function store(ArticleRequest $request): JsonResponse
     {
 
-        $slug = Helpers::slugify($request->input('title'));
+        // return response()->json([
+        //     "status" => "sucess",
+        //     "photo" => $request->input('photo'),
+        //     "titleVi" => $request->input('titleVi'),
+        //     "titleEn" => $request->input('titleEn'),
+        //     "slug" => $request->input('slug'),
+        //     "contentVi" => $request->input('contentVi'),
+        //     "contentEn" => $request->input('contentEn'),
+        //     "is_show" => $request->input('is_show'),
+        //     "is_featured" => $request->input('is_featured'),
+        //     "category_id" => $request->input('category_id')
+        // ]);
 
-        $articleBySlug = $this->articleRepository->getArticleBySlug($slug);
+        $articleBySlug = $this->articleRepository->getArticleBySlug($request->input('slug'));
 
         if ($articleBySlug) {
             return $this->respondError(
@@ -51,9 +62,21 @@ class ArticleController extends Controller
             );
         }
 
+        if($request->input('photo')) {
+
+        } else {
+            $photoUrl = "placeholder.png";
+        }
+
+        // return response()->json([
+        //     "status" => "sucess",
+        //     "is_show" => $request->input('is_show'),
+        //     "is_featured" => $request->input('is_featured'),
+        // ]);
+
         $article = $this->articleRepository->store([
-            'slug' => Helpers::slugify($slug),
-            'photo' => $request->input('photo'),
+            'slug' => $request->input('slug'),
+            'photo' => $photoUrl,
             'is_show' => $request->input('is_show'),
             'is_featured' => $request->input('is_featured'),
         ]);
@@ -66,17 +89,17 @@ class ArticleController extends Controller
         $articleTranslationVi = $this->articleTranslationRepository->store([
             'article_id' => $article->id,
             'language_id' => 1,
-            'title' => $request->input('title'),
-            'content' => $request->input('content'),
-            'description' => $request->input('description'),
+            'title' => $request->input('titleVi'),
+            'content' => $request->input('contentVi'),
+            'description' => $request->input('descriptionVi'),
         ]);
 
         $articleTranslationEn = $this->articleTranslationRepository->store([
             'article_id' => $article->id,
             'language_id' => 2,
-            'title' => $request->input('title'),
-            'content' => $request->input('content'),
-            'description' => $request->input('description'),
+            'title' => $request->input('titleEn'),
+            'content' => $request->input('contentEn'),
+            'description' => $request->input('descriptionEn'),
         ]);
 
         return $this->respondSuccess(new ArticleResource($article), Response::HTTP_CREATED);
