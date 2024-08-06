@@ -12,25 +12,25 @@ class ArticleRepository
     {
     }
 
-    public function getFeaturedLatestNews($totalArticle): LengthAwarePaginator
-    {
-        $featuredArticles = $this->article->query()
-            ->where('is_featured', true)
-            ->orderByDesc('updated_at');
+    // public function getFeaturedLatestNews($totalArticle): LengthAwarePaginator
+    // {
+    //     $featuredArticles = $this->article->query()
+    //         ->where('is_featured', true)
+    //         ->orderByDesc('updated_at');
 
-        $featuredArticlesCount = $featuredArticles->count();
+    //     $featuredArticlesCount = $featuredArticles->count();
 
-        if ($featuredArticlesCount < $totalArticle) {
-            $additionalArticles = $this->article->query()
-                                     ->where('is_featured', false)
-                                     ->orderByDesc('updated_at')
-                                     ->limit($totalArticle - $featuredArticlesCount);
+    //     if ($featuredArticlesCount < $totalArticle) {
+    //         $additionalArticles = $this->article->query()
+    //                                  ->where('is_featured', false)
+    //                                  ->orderByDesc('updated_at')
+    //                                  ->limit($totalArticle - $featuredArticlesCount);
 
-            $result = $featuredArticles->union($additionalArticles);
-        }
+    //         $result = $featuredArticles->union($additionalArticles);
+    //     }
 
-        return $result->paginate(perPage: $totalArticle);
-    }
+    //     return $result->paginate(perPage: $totalArticle);
+    // }
 
     public function getArticles(int $perPage, int $page, array $filters): LengthAwarePaginator
     {
@@ -56,6 +56,11 @@ class ArticleRepository
     }
 
     public function updateArticle(int $id, array $values): bool|int
+    {
+        return $this->article->where('id', $id)->first()->update($values);
+    }
+
+    public function updateManagementArticle(int $id, array $values): bool|int
     {
         return $this->article->where('id', $id)->first()->update($values);
     }

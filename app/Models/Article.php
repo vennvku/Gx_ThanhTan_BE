@@ -51,8 +51,23 @@ class Article extends Model
         return $this->belongsToMany(Category::class, 'article_categories');
     }
 
+    public function articleCategories()
+    {
+        return $this->hasMany(ArticleCategory::class);
+    }
+
     public function modelFilter(): string
     {
         return $this->provideFilter(ArticleFilter::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($article) {
+            $article->translations()->delete();
+            $article->articleCategories()->delete();
+        });
     }
 }

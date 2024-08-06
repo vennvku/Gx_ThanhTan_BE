@@ -30,11 +30,12 @@ class ArticleResource extends JsonResource
  
         return [
             'id' => $this->resource->id,
-            'photo' => $this->photo,
-            'slug' => $this->slug,
-            'is_show' => $this->is_show,
-            'is_featured' => $this->is_featured,
-            'created_at' => $this->created_at,
+            'photo' => $this->resource->photo,
+            'slug' => $this->resource->slug,
+            'is_show' => $this->resource->is_show,
+            'is_featured' => $this->resource->is_featured,
+            'author' => $this->resource->createdBy,
+            'created_at' => $this->resource->created_at,
             'translations' => $translationContent,
             'categories' => $this->whenLoaded('categories', function () {
                 return new CategoryResource($this->categories->first());

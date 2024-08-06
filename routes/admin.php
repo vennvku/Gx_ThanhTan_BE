@@ -25,4 +25,10 @@ Route::group(['middleware' => 'auth:admin', 'as' => 'api.admin.'], static functi
     Route::post('categories/move-bottom-category', [CategoryController::class, 'moveBottomCategory'])
         ->name('categories.move-bottom-category');
 
+    Route::post('articles/update-article-management/{id}', [ArticleController::class, 'updateArticleManagement'])
+        ->name('articles.update-article-management');
+
+    Route::post('articles/update-articles-action', [ArticleController::class, 'updateArticlesAction'])
+        ->name('articles.update-articles-action');
+
 });

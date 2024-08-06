@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Admin\ArticleRequest;
+use App\Http\Requests\Admin\ArticleManagementRequest;
 use App\Http\Resources\Admin\ArticleResource;
 use App\Http\Resources\Admin\ArticleCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,4 +111,73 @@ class ArticleController extends Controller
         $article = $this->articleRepository->getArticleById($id);
         return $this->respondSuccess(new ArticleResource($article));
     }
+
+    public function updateArticleManagement(int $id, ArticleManagementRequest $request): JsonResponse
+    {
+        $article = $this->articleRepository->getArticleById($id);
+        
+        if (is_null($article)) {
+            return $this->respondError(
+                config('errors.the_id_not_found'),
+                Response::HTTP_NOT_FOUND,
+            );
+        }
+
+        $articleUpdate = $this->articleRepository->updateManagementArticle($id, $request->validated());
+        
+        $article = $this->articleRepository->getArticleById($id);
+
+        return $this->respondSuccess(new ArticleResource($article));
+    }
+
+    public function updateArticlesAction(Request $request): JsonResponse
+    {
+
+        $idAction = $request->input('id_action', null);
+        $listIdArticles = $request->input('list_id_articles', []);
+
+        if($idAction) {
+            if($idAction == 1) {
+                $validatedData['is_show'] = 1;
+            } else if($idAction == 2) {
+                $validatedData['is_show'] = 0;
+            } else if($idAction == 3) {
+                $validatedData['is_featured'] = 1;
+            } else if($idAction == 4) {
+                $validatedData['is_featured'] = 0;
+            } else {
+                $validatedData = [];
+            }
+
+            foreach ($listIdArticles as $id) {
+                $article = $this->articleRepository->getArticleById($id);
+            
+                if (is_null($article)) {
+                    return $this->respondError(
+                        config('errors.the_id_not_found'),
+                        Response::HTTP_NOT_FOUND,
+                    );
+                }
+
+                if($idAction == 5) {
+                    $articleDelete = $this->articleRepository
+                                    ->deleteArticleById($id);
+                } else {
+                    $articleUpdate = $this->articleRepository
+                                    ->updateManagementArticle(
+                                        $id, 
+                                        $validatedData
+                                    );
+                }
+
+                
+            }
+
+        }
+
+        return $this->respondSuccess(null);
+    }
+
+    
+
 }
