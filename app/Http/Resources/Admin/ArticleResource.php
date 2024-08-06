@@ -32,7 +32,7 @@ class ArticleResource extends JsonResource
             'id' => $this->resource->id,
             'photo' => $this->resource->photo,
             'slug' => $this->resource->slug,
-            'is_show' => $this->resource->is_show,
+            'is_show' => $this->resource->is_show ? 1 : 0,
             'is_featured' => $this->resource->is_featured,
             'author' => $this->resource->createdBy,
             'created_at' => $this->resource->created_at,

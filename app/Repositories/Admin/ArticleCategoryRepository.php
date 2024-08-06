@@ -18,7 +18,7 @@ class ArticleCategoryRepository
 
     public function updateArticleCategory(int $id, array $values): bool|int
     {
-        return $this->articleCategory->where('id', $id)->first()->update($values);
+        return $this->articleCategory->where('article_id', $id)->first()->update($values);
     }
 
     public function deleteArticleCategoryById(int $id): bool|null

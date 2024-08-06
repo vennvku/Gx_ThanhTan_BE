@@ -169,14 +169,83 @@ class ArticleController extends Controller
                                         $validatedData
                                     );
                 }
-
-                
             }
-
         }
 
         return $this->respondSuccess(null);
     }
+
+    public function update(int $id, ArticleRequest $request): JsonResponse
+    {
+
+        // return response()->json([
+        //     "status" => "sucess",
+        //     "photo" => $request->input('photo'),
+        //     "titleVi" => $request->input('titleVi'),
+        //     "titleEn" => $request->input('titleEn'),
+        //     "slug" => $request->input('slug'),
+        //     "contentVi" => $request->input('contentVi'),
+        //     "contentEn" => $request->input('contentEn'),
+        //     "is_show" => $request->input('is_show'),
+        //     "is_featured" => $request->input('is_featured'),
+        //     "category_id" => $request->input('category_id')
+        // ]);
+
+        $article = $this->articleRepository->getArticleById($id);
+
+        if ($request->input('slug') !== $article->slug) {
+            $articleBySlug = $this->articleRepository->getArticleBySlug($request->input('slug'));
+            
+            if ($articleBySlug) {
+                return $this->respondError(
+                    config('errors.article_already_exists'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+        }
+
+        if($request->input('photo')) {
+
+        } else {
+            $photoUrl = "placeholder.png";
+        }
+
+        $validatedDataArticle['slug'] = $request->input('slug');
+        $validatedDataArticle['photo'] = $photoUrl;
+        $validatedDataArticle['is_show'] = $request->input('is_show');
+        $validatedDataArticle['is_featured'] = $request->input('is_featured');
+
+        $articleUpdate = $this->articleRepository->updateArticle($id, $validatedDataArticle);
+
+        $validatedDataArticleCategory['category_id'] = $request->input('category_id');
+
+        $articleCategoryUpdate = $this->articleCategoryRepository->updateArticleCategory($id, $validatedDataArticleCategory);
+
+
+        $validatedDataArticleTranslationVi['title'] = $request->input('titleVi');
+        $validatedDataArticleTranslationVi['content'] = $request->input('contentVi');
+        $validatedDataArticleTranslationVi['description'] = $request->input('descriptionVi');
+
+        $articleTranslationViUpdate = $this->articleTranslationRepository->updateArticleTranslation(
+            $id,
+            1,
+            $validatedDataArticleTranslationVi
+        );
+
+        $validatedDataArticleTranslationEn['title'] = $request->input('titleEn');
+        $validatedDataArticleTranslationEn['content'] = $request->input('contentEn');
+        $validatedDataArticleTranslationEn['description'] = $request->input('descriptionEn');
+
+        $articleTranslationViUpdate = $this->articleTranslationRepository->updateArticleTranslation(
+            $id,
+            2,
+            $validatedDataArticleTranslationEn
+        );
+
+        return $this->respondSuccess(null);
+    }
+
+
 
     
 

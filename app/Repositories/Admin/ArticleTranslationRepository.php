@@ -16,9 +16,13 @@ class ArticleTranslationRepository
         return $this->articleTranslation->query()->create($attributes);
     }
 
-    public function updateArticleTranslation(int $id, array $values): bool|int
+    public function updateArticleTranslation(int $id, int $language_id, array $values): bool|int
     {
-        return $this->articleTranslation->where('id', $id)->first()->update($values);
+        return $this->articleTranslation
+                ->where('article_id', $id)
+                ->where('language_id', $language_id)
+                ->first()
+                ->update($values);
     }
 
     public function deleteArticleTranslationById(int $id): bool|null
