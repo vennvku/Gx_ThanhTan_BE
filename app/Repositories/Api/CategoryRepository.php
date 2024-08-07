@@ -13,6 +13,18 @@ class CategoryRepository
 
     public function getCategories()
     {
-        return $this->category->with('children')->whereNull('parent_id')->get();
+        return $this->category
+                ->with('children')
+                ->whereNull('parent_id')
+                ->where('status', 1)
+                ->orderBy('position', 'asc')
+                ->get();
     }
+
+    public function getCategoryByUrl(string $url): Category|null
+    {
+        return $this->category->query()->where('url', $url)->first();
+    }
+
+    
 }

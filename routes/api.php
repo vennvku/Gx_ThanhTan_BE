@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 Route::middleware(['api'])->group(static function (): void {
 
     Route::resource('categories', CategoryController::class)->only(['index']);
+    Route::post('get-type-category', [CategoryController::class, 'getTypeCategory']);
     
     Route::group(['prefix' => 'articles', 'as' => 'api.articles.'], static function (): void {
         
