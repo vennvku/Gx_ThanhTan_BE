@@ -245,7 +245,50 @@ class ArticleController extends Controller
         return $this->respondSuccess(null);
     }
 
+    public function createFixedPage(ArticleRequest $request): JsonResponse
+    {
 
+        $articleBySlug = $this->articleRepository->getArticleBySlug($request->input('slug'));
+
+        if ($articleBySlug) {
+            return $this->respondError(
+                config('errors.article_already_exists'),
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        if($request->input('photo')) {
+
+        } else {
+            $photoUrl = "placeholder.png";
+        }
+
+        $article = $this->articleRepository->store([
+            'slug' => $request->input('slug'),
+            'photo' => $photoUrl
+        ]);
+
+        $articleCategory = $this->articleCategoryRepository->store([
+            'article_id' => $article->id,
+            'category_id' => $request->input('category_id'),
+        ]);
+
+        $articleTranslationVi = $this->articleTranslationRepository->store([
+            'article_id' => $article->id,
+            'language_id' => 1,
+            'title' => $request->input('titleVi'),
+            'content' => $request->input('contentVi'),
+        ]);
+
+        $articleTranslationEn = $this->articleTranslationRepository->store([
+            'article_id' => $article->id,
+            'language_id' => 2,
+            'title' => $request->input('titleEn'),
+            'content' => $request->input('contentEn'),
+        ]);
+
+        return $this->respondSuccess(new ArticleResource($article), Response::HTTP_CREATED);
+    }
 
     
 
