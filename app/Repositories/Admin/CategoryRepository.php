@@ -20,6 +20,13 @@ class CategoryRepository
             ->get();
     }
 
+    public function getCategoriesFixed()
+    {
+        return $this->category
+            ->where('is_fixed_page', 1)
+            ->get();
+    }
+
     public function store(array $attributes): Category
     {
         return $this->category->query()->create($attributes);

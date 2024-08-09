@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth:admin', 'as' => 'api.admin.'], static functi
     Route::post('categories/move-bottom-category', [CategoryController::class, 'moveBottomCategory'])
         ->name('categories.move-bottom-category');
 
+    Route::get('get-categories-fixed', [CategoryController::class, 'getCategoriesFixed'])
+        ->name('get-categories-fixed');
+
     Route::post('articles/update-article-management/{id}', [ArticleController::class, 'updateArticleManagement'])
         ->name('articles.update-article-management');
 

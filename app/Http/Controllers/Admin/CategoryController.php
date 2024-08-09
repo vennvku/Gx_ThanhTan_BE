@@ -13,6 +13,7 @@ use App\Http\Resources\Admin\CategoryCollection;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Admin\MoveCategoryRequest;
 use App\Http\Requests\Admin\ManagementCategoryRequest;
+use App\Http\Resources\Admin\CategoryFixedCollection;
 
 
 
@@ -204,6 +205,13 @@ class CategoryController extends Controller
         $updatedCount = $this->categoryRepository->updateCategoryPositions($parentId);
 
         return $this->respondSuccess(null);
+    }
+
+    public function getCategoriesFixed(): JsonResponse
+    {
+        $category = $this->categoryRepository->getCategoriesFixed();
+        
+        return $this->respondSuccess(new CategoryFixedCollection($category));
     }
 
     
