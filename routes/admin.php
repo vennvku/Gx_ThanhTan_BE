@@ -37,4 +37,7 @@ Route::group(['middleware' => 'auth:admin', 'as' => 'api.admin.'], static functi
     Route::post('create-fixed-page', [ArticleController::class, 'createFixedPage'])
         ->name('create-fixed-page');
 
+    Route::post('update-fixed-page/{id}', [ArticleController::class, 'updateFixedPage'])
+        ->name('update-fixed-page');
+
 });

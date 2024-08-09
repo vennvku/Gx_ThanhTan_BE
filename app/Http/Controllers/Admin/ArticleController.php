@@ -290,6 +290,29 @@ class ArticleController extends Controller
         return $this->respondSuccess(new ArticleResource($article), Response::HTTP_CREATED);
     }
 
+    public function updateFixedPage(int $id, ArticleRequest $request): JsonResponse
+    {
+        $article = $this->articleRepository->getArticleById($id);
+
+        $validatedDataArticleTranslationVi['content'] = $request->input('contentVi');
+
+        $articleTranslationViUpdate = $this->articleTranslationRepository->updateArticleTranslation(
+            $id,
+            1,
+            $validatedDataArticleTranslationVi
+        );
+
+        $validatedDataArticleTranslationEn['content'] = $request->input('contentEn');
+
+        $articleTranslationViUpdate = $this->articleTranslationRepository->updateArticleTranslation(
+            $id,
+            2,
+            $validatedDataArticleTranslationEn
+        );
+
+        return $this->respondSuccess(null);
+
+    }
     
 
 }
