@@ -26,5 +26,10 @@ class CategoryRepository
         return $this->category->query()->where('url', $url)->first();
     }
 
+    public function getCategoryById(int $id): Category|null
+    {
+        return $this->category->query()->where('id', $id)->first();
+    }
+
     
 }

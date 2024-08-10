@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Api;
 
 use App\Http\Resources\Traits\PaginationCollectionTrait;
 use Illuminate\Http\Request;
