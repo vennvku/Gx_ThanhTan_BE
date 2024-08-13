@@ -25,6 +25,13 @@ class CategoryController extends Controller
         return $this->respondSuccess(new CategoryCollection($category));
     }
 
+    public function show($url): JsonResponse
+    {
+        $category = $this->categoryRepository->getCategoryByUrl($url);
+ 
+        return $this->respondSuccess(new CategoryResource($category));
+    }
+
     public function getTypeCategory(Request $request): JsonResponse
     {
 

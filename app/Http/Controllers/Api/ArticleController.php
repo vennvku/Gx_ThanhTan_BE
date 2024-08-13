@@ -28,7 +28,7 @@ class ArticleController extends Controller
 
         $article = $this->articleRepository->getFeaturedLatestNews($totalArticle);  
  
-        return $this->respondSuccess(new ArticleCollection($article));
+        return $this->respondSuccess(new ArticleListCollection($article));
     }
 
     public function showDetailArticle($slug): JsonResponse
@@ -65,10 +65,10 @@ class ArticleController extends Controller
         return $this->respondSuccess(new ArticleResource($article));
     }
 
-    public function getTopFeaturedArticle($url): JsonResponse 
+    public function getTopFeaturedArticle(Request $request): JsonResponse 
     {
-
-        $topCount = 4;
+        $url = $request->input('url');
+        $topCount = $request->input('limit');
 
         $topFeaturedArticle = $this->articleRepository
                                 ->getTopFeaturedArticle($url, $topCount);

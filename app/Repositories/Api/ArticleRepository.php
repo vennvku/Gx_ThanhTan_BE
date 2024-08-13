@@ -12,25 +12,37 @@ class ArticleRepository
     {
     }
 
-    // public function getFeaturedLatestNews($totalArticle): LengthAwarePaginator
-    // {
-    //     $featuredArticles = $this->article->query()
-    //         ->where('is_featured', true)
-    //         ->orderByDesc('updated_at');
+    public function getFeaturedLatestNews($totalArticle)
+    {
+        $featuredArticles = $this->article->query()
+                ->whereHas('categories', function ($query) {
+                    $query->where('is_fixed_page', 0);
+                })
+                ->where('is_featured', true)
+                ->where('is_show', true)
+                ->latest()
+                ->take($totalArticle)
+                ->get();
 
-    //     $featuredArticlesCount = $featuredArticles->count();
+        if ($featuredArticles->count() < $totalArticle) {
+            $remainingCount = $totalArticle - $featuredArticles->count();
+            $latestArticles = $this->article->query()
+                ->whereHas('categories', function ($query) {
+                    $query->where('is_fixed_page', 0);
+                })
+                ->where('is_show', true)
+                ->whereNotIn('id', $featuredArticles->pluck('id'))
+                ->latest()
+                ->take($remainingCount)
+                ->get();
+    
+            $result = $featuredArticles->concat($latestArticles);
+        } else {
+            $result = $featuredArticles;
+        }
 
-    //     if ($featuredArticlesCount < $totalArticle) {
-    //         $additionalArticles = $this->article->query()
-    //                                  ->where('is_featured', false)
-    //                                  ->orderByDesc('updated_at')
-    //                                  ->limit($totalArticle - $featuredArticlesCount);
-
-    //         $result = $featuredArticles->union($additionalArticles);
-    //     }
-
-    //     return $result->paginate(perPage: $totalArticle);
-    // }
+        return $result;
+    }
 
     
     public function getTopFeaturedArticle(string $url, int $topCount)
