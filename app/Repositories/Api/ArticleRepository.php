@@ -32,6 +32,61 @@ class ArticleRepository
     //     return $result->paginate(perPage: $totalArticle);
     // }
 
+    
+    public function getTopFeaturedArticle(string $url, int $topCount)
+    {
+        $featuredArticles = $this->article->query()
+                ->whereHas('categories', function ($query) use ($url) {
+                    $query->where('url', $url);
+                })
+                ->where('is_featured', true)
+                ->where('is_show', true)
+                ->latest()
+                ->take($topCount)
+                ->get();
+
+        if ($featuredArticles->count() < $topCount) {
+            $remainingCount = $topCount - $featuredArticles->count();
+            $latestArticles = $this->article->query()
+                ->whereHas('categories', function ($query) use ($url) {
+                    $query->where('url', $url);
+                })
+                ->where('is_show', true)
+                ->whereNotIn('id', $featuredArticles->pluck('id'))
+                ->latest()
+                ->take($remainingCount)
+                ->get();
+    
+            $topArticles = $featuredArticles->concat($latestArticles);
+        } else {
+            $topArticles = $featuredArticles;
+        }
+
+        return $topArticles;
+    }
+
+    public function getListArticleCategory(string $url, ?object $listId = null, int $perPage, int $page): LengthAwarePaginator
+    {
+        return $this->article->query()
+            ->whereHas('categories', function ($query) use ($url) {
+                $query->where('url', $url);
+            })
+            ->where('is_show', true)
+            ->whereNotIn('id', $listId)
+            ->latest()
+            ->paginate(perPage: $perPage, page: $page);
+    }
+
+    public function getLatestArticles($limit)
+    {
+        return $this->article->query()
+            ->whereHas('categories', function ($query) {
+                $query->where('is_fixed_page', 0);
+            })
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
 
     public function getArticleById(int $id): Article|null
     {
@@ -42,5 +97,7 @@ class ArticleRepository
     {
         return $this->article->where('slug', $slug)->first();
     }
+
+    
 
 }

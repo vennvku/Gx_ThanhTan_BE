@@ -12,6 +12,7 @@ use App\Repositories\Api\ArticleRepository;
 use App\Repositories\Api\CategoryRepository;
 use App\Http\Resources\Api\ArticleResource;
 use App\Http\Resources\Api\ArticleCollection;
+use App\Http\Resources\Api\ArticleListCollection;
 
 class ArticleController extends Controller
 {
@@ -64,4 +65,48 @@ class ArticleController extends Controller
         return $this->respondSuccess(new ArticleResource($article));
     }
 
+    public function getTopFeaturedArticle($url): JsonResponse 
+    {
+
+        $topCount = 4;
+
+        $topFeaturedArticle = $this->articleRepository
+                                ->getTopFeaturedArticle($url, $topCount);
+
+        return $this->respondSuccess(new ArticleListCollection($topFeaturedArticle));
+    }
+
+    public function getListArticles(Request $request): JsonResponse 
+    {
+
+        $url = $request->input('url');
+
+        $topCount = 4;
+        $topFeaturedArticle = $this->articleRepository
+                                ->getTopFeaturedArticle($url, $topCount);
+        $listIdTopFeaturedArticles = $topFeaturedArticle->pluck('id');
+
+        $perPage = 5;
+        $page = $request->input('page', 1);
+
+        $article = $this->articleRepository
+                    ->getListArticleCategory(
+                        $url,
+                        $listIdTopFeaturedArticles,
+                        $perPage,
+                        $page
+                    );  
+ 
+        return $this->respondSuccess(new ArticleCollection($article));
+    }
+
+    public function getLatestArticles(): JsonResponse
+    {  
+
+        $limit = 6;
+
+        $latestArticles = $this->articleRepository->getLatestArticles($limit);
+ 
+        return $this->respondSuccess(new ArticleListCollection($latestArticles));
+    }
 }

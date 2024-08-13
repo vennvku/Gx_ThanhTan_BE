@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\Api\CategoryRepository;
 use App\Http\Resources\Api\CategoryCollection;
+use App\Http\Resources\Api\CategoryResource;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
@@ -53,6 +54,8 @@ class CategoryController extends Controller
             );
         }
 
+        $result['category'] = new CategoryResource($category);
+
         $chain = [];
 
         while ($category) {
@@ -82,7 +85,10 @@ class CategoryController extends Controller
                 $item['url'] = $chain[$parentIndex]['url'] . '/' . $item['url'];
             }
         }
+
+        $result['chain'] = $chain;
+        
     
-        return $this->respondSuccess($chain);
+        return $this->respondSuccess($result);
     }
 }

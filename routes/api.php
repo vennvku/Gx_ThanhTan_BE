@@ -23,5 +23,16 @@ Route::middleware(['api'])->group(static function (): void {
 
     Route::get('show-detail-fixed-page/{slug}', [ArticleController::class, 'showDetailFixedPage'])
         ->name('show-detail-fixed-page');
+    
+    Route::get('get-top-featured-article/{slug}', [ArticleController::class, 'getTopFeaturedArticle'])
+        ->name('get-top-featured-article');
+
+    Route::get('get-list-articles', [ArticleController::class, 'getListArticles'])
+        ->name('get-list-articles');
+    
+    Route::get('get-latest-articles', [ArticleController::class, 'getLatestArticles'])
+        ->name('get-latest-articles');
+
+        
 
 });
