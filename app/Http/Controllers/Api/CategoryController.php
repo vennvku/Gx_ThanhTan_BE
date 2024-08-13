@@ -42,9 +42,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function getChainCategory($idCategory): JsonResponse
+    public function getChainCategory($slug): JsonResponse
     {
-        $category = $this->categoryRepository->getCategoryById($idCategory);;
+        $category = $this->categoryRepository->getCategoryByUrl($slug);;
 
         if (is_null($category)) {
             return $this->respondError(

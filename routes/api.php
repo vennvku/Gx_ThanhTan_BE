@@ -10,7 +10,7 @@ Route::middleware(['api'])->group(static function (): void {
     Route::post('get-type-category', [CategoryController::class, 'getTypeCategory'])
             ->name('get-type-category');
     
-    Route::get('get-chain-category/{idCategory}', [CategoryController::class, 'getChainCategory'])
+    Route::get('get-chain-category/{slug}', [CategoryController::class, 'getChainCategory'])
         ->name('get-chain-category');
     
     Route::group(['prefix' => 'articles', 'as' => 'api.articles.'], static function (): void {
@@ -21,7 +21,7 @@ Route::middleware(['api'])->group(static function (): void {
             ->name('show-detail-article');
     });
 
-    Route::get('show-detail-fixed-page/{idCategory}', [ArticleController::class, 'showDetailFixedPage'])
+    Route::get('show-detail-fixed-page/{slug}', [ArticleController::class, 'showDetailFixedPage'])
         ->name('show-detail-fixed-page');
 
 });

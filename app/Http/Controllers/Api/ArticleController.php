@@ -38,10 +38,10 @@ class ArticleController extends Controller
         return $this->respondSuccess(new ArticleResource($articleBySlug));
     }
 
-    public function showDetailFixedPage($idCategory): JsonResponse
+    public function showDetailFixedPage($slug): JsonResponse
     {  
 
-        $category = $this->categoryRepository->getCategoryById($idCategory);
+        $category = $this->categoryRepository->getCategoryByUrl($slug);
 
         if (is_null($category)) {
             return $this->respondError(
@@ -63,8 +63,5 @@ class ArticleController extends Controller
  
         return $this->respondSuccess(new ArticleResource($article));
     }
-
-
-    
 
 }
