@@ -12,12 +12,8 @@ Route::middleware(['api'])->group(static function (): void {
     
     Route::get('get-chain-category/{slug}', [CategoryController::class, 'getChainCategory'])
         ->name('get-chain-category');
-    
-    // Route::group(['prefix' => 'articles', 'as' => 'api.articles.'], static function (): void {
-        
-    //     Route::get('{slug}', [ArticleController::class, 'showDetailArticle'])
-    //         ->name('show-detail-article');
-    // });
+
+    Route::resource('articles', ArticleController::class)->only(['show']);
 
     Route::get('get-featured-latest-news', [ArticleController::class, 'getFeaturedLatestNews'])
     ->name('get-featured-latest-news');

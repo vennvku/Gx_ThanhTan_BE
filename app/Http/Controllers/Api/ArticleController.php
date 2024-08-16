@@ -31,7 +31,7 @@ class ArticleController extends Controller
         return $this->respondSuccess(new ArticleListCollection($article));
     }
 
-    public function showDetailArticle($slug): JsonResponse
+    public function show($slug): JsonResponse
     {  
 
         $articleBySlug = $this->articleRepository->getArticleBySlug($slug);
