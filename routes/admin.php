@@ -20,6 +20,10 @@ Route::group(['middleware' => 'auth:admin', 'as' => 'api.admin.'], static functi
     Route::resource('category-translations', CategoryTranslationController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::resource('articles', ArticleController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 
+    
+    Route::post('update-category-management/{id}', [CategoryController::class, 'updateCategoryManagement'])
+        ->name('update-category-management');
+
     Route::post('categories/move-up-category', [CategoryController::class, 'moveUpCategory'])
         ->name('categories.move-up-category');
     Route::post('categories/move-bottom-category', [CategoryController::class, 'moveBottomCategory'])

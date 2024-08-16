@@ -85,7 +85,7 @@ class CategoryController extends Controller
 
         $validatedData = $request->validated();
 
-        if($request->has('parent_id')) {
+        if($request->input('parent_id')) {
             $latestPosition = $this->categoryRepository->getLatestPosition($request->input('parent_id'));
 
             if ($latestPosition) {
@@ -99,7 +99,7 @@ class CategoryController extends Controller
 
         $this->categoryRepository->updateCategory($id, $validatedData);
 
-        if($request->has('parent_id')) {
+        if($request->input('parent_id')) {
             $updatedCount = $this->categoryRepository->updateCategoryPositions($category->parent_id);
         }
 
@@ -111,6 +111,24 @@ class CategoryController extends Controller
             $categogyTransitionVi = $this->categoryTranslationRepository->updateCategoryTranslation($id, $languageIdVi, $request->input('nameVi'));
             $categogyTransitionEn = $this->categoryTranslationRepository->updateCategoryTranslation($id, $languageIdEn, $request->input('nameEn'));
         }
+
+        $category = $this->categoryRepository->getCategoryById($id);
+
+        return $this->respondSuccess(new CategoryResource($category));
+    }
+
+    public function updateCategoryManagement(int $id, CategoryRequest $request): JsonResponse
+    {
+        $category = $this->categoryRepository->getCategoryById($id);
+        
+        if (is_null($category)) {
+            return $this->respondError(
+                config('errors.the_id_not_found'),
+                Response::HTTP_NOT_FOUND,
+            );
+        }
+
+        $categoryUpdate = $this->categoryRepository->updateCategory($id, $request->validated());
 
         $category = $this->categoryRepository->getCategoryById($id);
 
@@ -213,10 +231,5 @@ class CategoryController extends Controller
         
         return $this->respondSuccess(new CategoryFixedCollection($category));
     }
-
-    
-
-
-    
 
 }
